@@ -8,7 +8,7 @@ import org.springframework.web.reactive.config.EnableWebFlux
 @SpringBootApplication
 @ComponentScan("com.luislucassilva.psiconoprecinho.*")
 @EnableWebFlux
-open class PsicoNoPrecinhoApplication {}
+class PsicoNoPrecinhoApplication {}
 
 fun main(args: Array<String>) {
     runApplication<PsicoNoPrecinhoApplication>(*args)
