@@ -6,6 +6,15 @@ object ContactSqlExpressions {
 
     const val INSERT = """
         INSERT INTO $TABLE_NAME VALUES (:id, :type, :number);
-        SELECT * FROM $TABLE_NAME where idContato = :id;
+        SELECT * FROM $TABLE_NAME WHERE idContato = :id;
+    """
+
+    const val UPDATE = """
+        UPDATE $TABLE_NAME SET
+        Tipo = :type,
+        Telefone = :number
+        WHERE idContato = :id;
+        
+        SELECT * FROM $TABLE_NAME WHERE idContato = :id;
     """
 }

@@ -4,4 +4,5 @@ import com.luislucassilva.psiconoprecinho.domain.address.Address
 
 interface AddressRepository {
     suspend fun create(address: Address): Address?
+    suspend fun update(address: Address): Address?
 }

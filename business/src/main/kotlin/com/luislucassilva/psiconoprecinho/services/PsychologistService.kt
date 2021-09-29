@@ -17,4 +17,8 @@ class PsychologistService(
     suspend fun create(psychologist: Psychologist): Psychologist? {
         return psychologistRepository.create(psychologist.copy(id = UUID.randomUUID()))
     }
+
+    suspend fun findById(id: UUID): Psychologist? {
+        return psychologistRepository.findById(id)
+    }
 }

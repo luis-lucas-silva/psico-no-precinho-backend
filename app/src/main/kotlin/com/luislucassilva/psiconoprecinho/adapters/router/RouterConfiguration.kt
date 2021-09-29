@@ -22,8 +22,10 @@ class RouterConfiguration {
             getContextPath().nest {
                 "/psychologist".nest {
                     POST("/login", handler::findByUserNameAndPasswordRequest)
+                    GET("/{id:$UUID_REGEX}", handler::findById)
                 }
                 POST("/psychologist", handler::create)
+
             }
         }
     }
