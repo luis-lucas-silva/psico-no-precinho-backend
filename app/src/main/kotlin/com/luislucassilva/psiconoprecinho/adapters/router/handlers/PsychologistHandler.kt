@@ -7,6 +7,7 @@ import kotlinx.coroutines.reactive.awaitFirst
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
+import java.util.*
 import java.util.regex.Pattern
 
 @Component
@@ -44,6 +45,17 @@ class PsychologistHandler(
         }
 
     }
-}
 
-data class Teste(val a: String, val b: String )
+    suspend fun findById(serverRequest: ServerRequest): ServerResponse {
+        val id = UUID.fromString(serverRequest.pathVariable("id"))
+
+        val psychologist = psychologistService.findById(id)
+
+        return if (psychologist != null) {
+            ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologist)
+        }
+        else {
+            ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
+        }
+    }
+}

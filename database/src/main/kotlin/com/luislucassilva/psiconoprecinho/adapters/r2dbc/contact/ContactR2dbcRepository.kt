@@ -1,6 +1,7 @@
 package com.luislucassilva.psiconoprecinho.adapters.r2dbc.contact
 
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.contact.ContactSqlExpressions.INSERT
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.contact.ContactSqlExpressions.UPDATE
 import com.luislucassilva.psiconoprecinho.domain.contact.Contact
 import com.luislucassilva.psiconoprecinho.ports.database.contact.ContactRepository
 import io.r2dbc.spi.Row
@@ -24,6 +25,17 @@ open class ContactR2dbcRepository(
                 .awaitOneOrNull()
         }
 
+    }
+
+    override suspend fun update(contact: Contact): Contact? {
+        with(contact) {
+            return databaseClient.sql(UPDATE)
+                .bind("id", id.toString())
+                .bind("type", type)
+                .bind("number", number)
+                .map(::rowMapper)
+                .awaitOneOrNull()
+        }
     }
 
     private fun rowMapper(row: Row): Contact {

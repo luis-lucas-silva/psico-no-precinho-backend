@@ -1,6 +1,7 @@
 package com.luislucassilva.psiconoprecinho.adapters.r2dbc.address
 
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.address.AddressSqlExpressions.INSERT
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.address.AddressSqlExpressions.UPDATE
 import com.luislucassilva.psiconoprecinho.domain.address.Address
 import com.luislucassilva.psiconoprecinho.ports.database.address.AddressRepository
 import com.luislucassilva.psiconoprecinho.utils.bindOrNull
@@ -30,6 +31,22 @@ open class AddressR2dbcRepository(
                 .awaitOneOrNull()
         }
 
+    }
+
+    override suspend fun update(address: Address): Address? {
+        with(address) {
+            return databaseClient.sql(UPDATE)
+                .bind("id", id.toString())
+                .bind("logradouro", logradouro)
+                .bindOrNull("numero", numero)
+                .bindOrNull("complemento", complemento)
+                .bind("cep", cep)
+                .bind("bairro", bairro)
+                .bind("cidade", cidade)
+                .bind("estado", estado)
+                .map(::rowMapper)
+                .awaitOneOrNull()
+        }
     }
 
     private fun rowMapper(row: Row): Address {
