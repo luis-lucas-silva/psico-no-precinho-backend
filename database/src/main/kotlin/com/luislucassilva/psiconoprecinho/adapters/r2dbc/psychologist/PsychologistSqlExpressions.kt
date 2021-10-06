@@ -42,12 +42,20 @@ object PsychologistSqlExpressions {
         ValorMax = :maxValue,
         Descricao = :description,
         Email = :email,
-        Senha = :password
+        Senha = :password,
+        StatusCadastro = :status
         WHERE idPsicologo = :id;
         
         SELECT * FROM $TABLE_NAME 
         LEFT JOIN endereco ON $TABLE_NAME.Endereco_idEndereco = endereco.idEndereco
         LEFT JOIN contato ON $TABLE_NAME.Contato_idContato = contato.idContato
         WHERE idPsicologo = :id;
+    """
+
+    const val SEARCH = """
+        SELECT * FROM $TABLE_NAME p 
+        LEFT JOIN endereco e ON p.Endereco_idEndereco = e.idEndereco
+        LEFT JOIN contato c ON p.Contato_idContato = c.idContato
+        WHERE 
     """
 }

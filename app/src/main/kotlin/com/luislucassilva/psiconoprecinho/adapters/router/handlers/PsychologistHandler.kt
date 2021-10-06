@@ -2,6 +2,7 @@ package com.luislucassilva.psiconoprecinho.adapters.router.handlers
 
 import com.luislucassilva.psiconoprecinho.domain.login.LoginRequest
 import com.luislucassilva.psiconoprecinho.domain.psychologist.Psychologist
+import com.luislucassilva.psiconoprecinho.domain.search.SearchRequest
 import com.luislucassilva.psiconoprecinho.services.PsychologistService
 import kotlinx.coroutines.reactive.awaitFirst
 import org.springframework.http.HttpStatus
@@ -37,9 +38,9 @@ class PsychologistHandler(
     suspend fun create(serverRequest: ServerRequest): ServerResponse {
         val psychologist = serverRequest.bodyToMono(Psychologist::class.java).awaitFirst()
 
-        val insertedPsychologist = psychologistService.create(psychologist)
-        return if (insertedPsychologist != null) {
-            ServerResponse.status(HttpStatus.CREATED).bodyValueAndAwait(insertedPsychologist)
+        val psychologistInserted = psychologistService.create(psychologist)
+        return if (psychologistInserted != null) {
+            ServerResponse.status(HttpStatus.CREATED).bodyValueAndAwait(psychologistInserted)
         } else {
             ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).buildAndAwait()
         }
@@ -58,4 +59,40 @@ class PsychologistHandler(
             ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
         }
     }
+
+    suspend fun updateById(serverRequest: ServerRequest): ServerResponse {
+        val psychologist = serverRequest.bodyToMono(Psychologist::class.java).awaitFirst()
+
+        val psychologistUpdated = psychologistService.update(psychologist)
+
+        return if (psychologistUpdated != null) {
+            ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologistUpdated)
+        }
+        else {
+            ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
+        }
+    }
+
+    suspend fun search(serverRequest: ServerRequest): ServerResponse {
+        val searchRequest = serverRequest.bodyToMono(SearchRequest::class.java).awaitFirst()
+
+        val psychologists = psychologistService.search(searchRequest)
+
+        return ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologists)
+    }
+
+
+    // aprovar
+
+//    login ok
+//    self-cadastro ok
+//    atualizar ok
+//    get individual ok
+//    aprovar
+//    buscar
+//  rota de foto
+
+//    paciente
+//    adm
+//    mensagem
 }

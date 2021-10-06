@@ -17,12 +17,14 @@ class RouterConfiguration {
     private fun getContextPath() = "/api/"
 
     @Bean
-    fun psychologistLoginRouter(handler: PsychologistHandler) = coRouter {
+    fun psychologistRouter(handler: PsychologistHandler) = coRouter {
         accept(MediaType.APPLICATION_JSON).nest {
             getContextPath().nest {
                 "/psychologist".nest {
                     POST("/login", handler::findByUserNameAndPasswordRequest)
+                    POST("/search", handler::search)
                     GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::updateById)
                 }
                 POST("/psychologist", handler::create)
 

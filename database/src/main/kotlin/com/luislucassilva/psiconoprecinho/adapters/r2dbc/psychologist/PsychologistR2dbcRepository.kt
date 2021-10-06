@@ -3,6 +3,7 @@ package com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.FIND_BY_ID
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.FIND_BY_USERNAME_AND_PASSWORD
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.INSERT
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.SEARCH
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.UPDATE
 import com.luislucassilva.psiconoprecinho.domain.address.Address
 import com.luislucassilva.psiconoprecinho.domain.contact.Contact
@@ -15,8 +16,10 @@ import com.luislucassilva.psiconoprecinho.ports.database.theme.ThemeRepository
 import com.luislucassilva.psiconoprecinho.utils.bindIfNotNull
 import com.luislucassilva.psiconoprecinho.utils.bindOrNull
 import io.r2dbc.spi.Row
+import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitOneOrNull
+import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -91,7 +94,7 @@ open class PsychologistR2dbcRepository(
 
     override suspend fun findById(id: UUID): Psychologist? {
         val psychologistFound =  databaseClient.sql(FIND_BY_ID)
-            .bind("id", id)
+            .bind("id", id.toString())
             .map(::rowMapper)
             .awaitOneOrNull()
 
@@ -118,6 +121,7 @@ open class PsychologistR2dbcRepository(
                 .bind("description", description)
                 .bind("email", email)
                 .bind("password", password)
+                .bind("status", status)
                 .map(::rowMapper)
                 .awaitOneOrNull()
 
@@ -143,6 +147,18 @@ open class PsychologistR2dbcRepository(
             return psychologistUpdated
         }
 
+    }
+
+    override suspend fun search(search: String): List<Psychologist> {
+        val psychologists =  databaseClient.sql(SEARCH + search)
+            .map(::rowMapper)
+            .flow()
+            .toList()
+
+        println(databaseClient.sql(SEARCH)
+            .bind("search", search).toString())
+
+        return psychologists
     }
 
     private fun rowMapper(row: Row): Psychologist {

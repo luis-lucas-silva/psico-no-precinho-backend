@@ -14,27 +14,27 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class FormacaoR2dbcRepository(
+open class FormacaoR2dbcRepository(
     private val databaseClient: DatabaseClient
 ) : FormacaoRepository {
     override suspend fun create(formacao: Formacao, psychologistId: UUID) {
 
         databaseClient.sql(INSERT)
-            .bind("id", formacao.id)
+            .bind("id", formacao.id.toString())
             .bind("name", formacao.name)
-            .bind("psychologistId", psychologistId)
+            .bind("psychologistId", psychologistId.toString())
             .await()
     }
 
     override suspend fun delete(psychologistId: UUID) {
         databaseClient.sql(DELETE)
-            .bind("psychologistId", psychologistId)
+            .bind("psychologistId", psychologistId.toString())
             .await()
     }
 
     override suspend fun findByPsychologistId(psychologistId: UUID): List<Formacao> {
         return databaseClient.sql(FIND_BY_PSYCHOLOGIST_ID)
-            .bind("psychologistId", psychologistId)
+            .bind("psychologistId", psychologistId.toString())
             .map(::rowMapper)
             .flow()
             .toList()

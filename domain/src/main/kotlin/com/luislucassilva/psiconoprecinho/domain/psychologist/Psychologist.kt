@@ -29,6 +29,6 @@ data class Psychologist(
 )
 
 data class Formacao(
-    val id: UUID,
+    val id: UUID? = UUID.randomUUID(),
     val name: String
 )

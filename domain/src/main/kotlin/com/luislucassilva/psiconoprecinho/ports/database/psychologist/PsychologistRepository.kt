@@ -8,4 +8,5 @@ interface PsychologistRepository {
     suspend fun create(psychologist: Psychologist): Psychologist?
     suspend fun findById(id: UUID): Psychologist?
     suspend fun update(psychologist: Psychologist): Psychologist?
+    suspend fun search(search: String): List<Psychologist>
 }
