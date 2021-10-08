@@ -80,25 +80,4 @@ class PsychologistHandler(
 
         return ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologists)
     }
-
-    private fun teste() {
-        val photoS = """"""
-        val photByteArray = photoS.toByteArray()
-        println(photByteArray)
-    }
-
-
-    // aprovar
-
-//    login ok
-//    self-cadastro ok
-//    atualizar ok
-//    get individual ok
-//    aprovar
-//    buscar
-//  rota de foto
-
-//    paciente
-//    adm
-//    mensagem
 }
