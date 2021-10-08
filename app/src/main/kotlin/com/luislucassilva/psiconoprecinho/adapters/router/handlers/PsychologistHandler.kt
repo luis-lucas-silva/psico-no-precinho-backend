@@ -81,6 +81,12 @@ class PsychologistHandler(
         return ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologists)
     }
 
+    private fun teste() {
+        val photoS = """"""
+        val photByteArray = photoS.toByteArray()
+        println(photByteArray)
+    }
+
 
     // aprovar
 

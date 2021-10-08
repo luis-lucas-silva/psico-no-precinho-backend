@@ -1,5 +1,6 @@
 package com.luislucassilva.psiconoprecinho.adapters.router
 
+import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PhotoHandler
 import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PsychologistHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -31,4 +32,20 @@ class RouterConfiguration {
             }
         }
     }
+
+    @Bean
+    fun photoRouter(handler: PhotoHandler) = coRouter {
+        accept(MediaType.MULTIPART_FORM_DATA).nest {
+            getContextPath().nest {
+                "/photo".nest {
+                    "/psychologist".nest {
+                        POST("/{id:$UUID_REGEX}", handler::createOrUpdate)
+//                        GET("/{id:$UUID_REGEX}", handler::findById)
+                        DELETE("/{id:$UUID_REGEX}", handler::deleteById)
+                    }
+                }
+            }
+        }
+    }
+
 }

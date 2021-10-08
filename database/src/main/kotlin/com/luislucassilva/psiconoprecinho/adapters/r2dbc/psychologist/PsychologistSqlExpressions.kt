@@ -58,4 +58,12 @@ object PsychologistSqlExpressions {
         LEFT JOIN contato c ON p.Contato_idContato = c.idContato
         WHERE 
     """
+
+    const val UPDATE_PHOTO_BY_ID = """
+        UPDATE $TABLE_NAME SET
+        Foto = :photo
+        WHERE idPsicologo = :id
+    """
+
+
 }

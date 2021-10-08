@@ -5,8 +5,10 @@ import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.Psychologi
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.INSERT
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.SEARCH
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.UPDATE
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.UPDATE_PHOTO_BY_ID
 import com.luislucassilva.psiconoprecinho.domain.address.Address
 import com.luislucassilva.psiconoprecinho.domain.contact.Contact
+import com.luislucassilva.psiconoprecinho.domain.photo.PhotoRequest
 import com.luislucassilva.psiconoprecinho.domain.psychologist.Psychologist
 import com.luislucassilva.psiconoprecinho.ports.database.address.AddressRepository
 import com.luislucassilva.psiconoprecinho.ports.database.contact.ContactRepository
@@ -18,6 +20,7 @@ import com.luislucassilva.psiconoprecinho.utils.bindOrNull
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.await
 import org.springframework.r2dbc.core.awaitOneOrNull
 import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
@@ -93,7 +96,7 @@ open class PsychologistR2dbcRepository(
     }
 
     override suspend fun findById(id: UUID): Psychologist? {
-        val psychologistFound =  databaseClient.sql(FIND_BY_ID)
+        val psychologistFound = databaseClient.sql(FIND_BY_ID)
             .bind("id", id.toString())
             .map(::rowMapper)
             .awaitOneOrNull()
@@ -107,7 +110,7 @@ open class PsychologistR2dbcRepository(
     override suspend fun update(psychologist: Psychologist): Psychologist? {
 
         with(psychologist) {
-            val psychologistUpdated =  databaseClient.sql(UPDATE)
+            val psychologistUpdated = databaseClient.sql(UPDATE)
                 .bindIfNotNull("id", id.toString())
                 .bind("name", name)
                 .bind("document", document)
@@ -150,15 +153,30 @@ open class PsychologistR2dbcRepository(
     }
 
     override suspend fun search(search: String): List<Psychologist> {
-        val psychologists =  databaseClient.sql(SEARCH + search)
+        val psychologists = databaseClient.sql(SEARCH + search)
             .map(::rowMapper)
             .flow()
             .toList()
 
-        println(databaseClient.sql(SEARCH)
-            .bind("search", search).toString())
+        databaseClient.sql(SEARCH)
+            .bind("search", search).toString()
 
         return psychologists
+    }
+
+    override suspend fun createPhoto(photoRequest: PhotoRequest) {
+        databaseClient.sql(UPDATE_PHOTO_BY_ID)
+            .bind("photo", photoRequest.photo)
+            .bind("id", photoRequest.userId.toString())
+            .await()
+    }
+
+    override suspend fun deletePhotoById(id: UUID) {
+        val nullValue: Any? = null
+        databaseClient.sql(UPDATE_PHOTO_BY_ID)
+            .bindOrNull("photo", nullValue)
+            .bind("id", id.toString())
+            .await()
     }
 
     private fun rowMapper(row: Row): Psychologist {
@@ -167,7 +185,7 @@ open class PsychologistR2dbcRepository(
             name = row.get("NomePsicologo") as String,
             documentType = row.get("TipoDocumento") as String,
             document = row.get("Documento") as String,
-            photo = row.get("Foto") as? ByteArray,
+            photo = getPhoto(row),
             crp = row.get("CRP") as String,
             birthdayDate = row.get("Nascimento") as LocalDate,
             gender = row.get("Genero") as String,
@@ -182,6 +200,15 @@ open class PsychologistR2dbcRepository(
         )
     }
 
+    private fun getPhoto(row: Row): ByteArray? {
+        val rowValue = row.get("Foto")
+        return if (rowValue != null) {
+            row.get("Foto", ByteArray::class.java)
+        } else {
+            null
+        }
+
+    }
     private fun rowMapperAddress(row: Row): Address {
         return Address(
             id = UUID.fromString(row.get("idEndereco") as String),
