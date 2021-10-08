@@ -1,5 +1,6 @@
 package com.luislucassilva.psiconoprecinho.adapters.router
 
+import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PhotoHandler
 import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PsychologistHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,16 +18,34 @@ class RouterConfiguration {
     private fun getContextPath() = "/api/"
 
     @Bean
-    fun psychologistLoginRouter(handler: PsychologistHandler) = coRouter {
+    fun psychologistRouter(handler: PsychologistHandler) = coRouter {
         accept(MediaType.APPLICATION_JSON).nest {
             getContextPath().nest {
                 "/psychologist".nest {
                     POST("/login", handler::findByUserNameAndPasswordRequest)
+                    POST("/search", handler::search)
                     GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::updateById)
                 }
                 POST("/psychologist", handler::create)
 
             }
         }
     }
+
+    @Bean
+    fun photoRouter(handler: PhotoHandler) = coRouter {
+        accept(MediaType.MULTIPART_FORM_DATA).nest {
+            getContextPath().nest {
+                "/photo".nest {
+                    "/psychologist".nest {
+                        POST("/{id:$UUID_REGEX}", handler::createOrUpdate)
+//                        GET("/{id:$UUID_REGEX}", handler::findById)
+                        DELETE("/{id:$UUID_REGEX}", handler::deleteById)
+                    }
+                }
+            }
+        }
+    }
+
 }

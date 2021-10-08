@@ -18,7 +18,7 @@ object AddressSqlExpressions {
         CEP = :cep,
         Bairro = :bairro,
         Cidade = :cidade,
-        Estado = :Estado)
+        Estado = :estado
         WHERE idEndereco = :id;
         
         SELECT * FROM $TABLE_NAME WHERE idEndereco = :id;

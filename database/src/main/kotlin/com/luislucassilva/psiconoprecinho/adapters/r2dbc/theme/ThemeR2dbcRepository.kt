@@ -1,6 +1,5 @@
 package com.luislucassilva.psiconoprecinho.adapters.r2dbc.theme
 
-import com.luislucassilva.psiconoprecinho.adapters.r2dbc.formacao.FormacaoSqlExpressions
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.theme.ThemeSqlExpressions.DELETE
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.theme.ThemeSqlExpressions.FIND_BY_PSYCHOLOGIST_ID
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.theme.ThemeSqlExpressions.INSERT
@@ -11,28 +10,29 @@ import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.await
 import org.springframework.r2dbc.core.flow
-import sun.awt.windows.ThemeReader.getEnum
+import org.springframework.stereotype.Repository
 import java.util.*
 
-class ThemeR2dbcRepository(
+@Repository
+open class ThemeR2dbcRepository(
     private val databaseClient: DatabaseClient
 ) : ThemeRepository {
     override suspend fun addThemeToPsychologist(themeId: Int, psychologistId: UUID) {
         databaseClient.sql(INSERT)
-            .bind("idPsicologo", psychologistId)
-            .bind("idTema", themeId)
+            .bind("idPsicologo", psychologistId.toString())
+            .bind("idTema", themeId.toString())
             .await()
     }
 
     override suspend fun deleteAllThemesToPsychologist(psychologistId: UUID) {
         databaseClient.sql(DELETE)
-            .bind("idPsicologo", psychologistId)
+            .bind("idPsicologo", psychologistId.toString())
             .await()
     }
 
     override suspend fun findByPsychologistId(psychologistId: UUID): List<Theme> {
         return databaseClient.sql(FIND_BY_PSYCHOLOGIST_ID)
-            .bind("idPsicologo", psychologistId)
+            .bind("idPsicologo", psychologistId.toString())
             .map(::rowMapper)
             .flow()
             .toList()
