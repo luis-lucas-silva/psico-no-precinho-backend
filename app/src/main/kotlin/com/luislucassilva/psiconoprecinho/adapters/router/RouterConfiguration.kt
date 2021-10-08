@@ -1,5 +1,6 @@
 package com.luislucassilva.psiconoprecinho.adapters.router
 
+import com.luislucassilva.psiconoprecinho.adapters.router.handlers.AdministratorHandler
 import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PhotoHandler
 import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PsychologistHandler
 import org.springframework.context.annotation.Bean
@@ -48,4 +49,17 @@ class RouterConfiguration {
         }
     }
 
+    @Bean
+    fun administratorRouter(handler: AdministratorHandler) = coRouter {
+        accept(MediaType.APPLICATION_JSON).nest {
+            getContextPath().nest {
+                "/administrator".nest {
+                    POST("/login", handler::findByUserNameAndPasswordRequest)
+                    GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::updateById)
+                }
+                POST("/administrator", handler::create)
+            }
+        }
+    }
 }
