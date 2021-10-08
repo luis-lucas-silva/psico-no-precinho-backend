@@ -1,5 +1,6 @@
 package com.luislucassilva.psiconoprecinho.services
 
+import com.luislucassilva.psiconoprecinho.domain.photo.PhotoRequest
 import com.luislucassilva.psiconoprecinho.domain.psychologist.Psychologist
 import com.luislucassilva.psiconoprecinho.domain.search.SearchBuilder
 import com.luislucassilva.psiconoprecinho.domain.search.SearchRequest
@@ -33,6 +34,14 @@ class PsychologistService(
         val search = SearchBuilder().fromFilters(values).build()
 
         return psychologistRepository.search(search)
+    }
+
+    suspend fun createPhoto(photoRequest: PhotoRequest) {
+        psychologistRepository.createPhoto(photoRequest)
+    }
+
+    suspend fun deletePhotoById(userId: UUID) {
+        psychologistRepository.deletePhotoById(userId)
     }
 }
 
