@@ -11,11 +11,49 @@ object PatientSqlExpressions {
         WHERE email = :username AND senha = :password
     """
     const val INSERT = """
-        INSERT INTO $TABLE_NAME VALUES (:id, :name, :document, :documentType, :photo, :birthdayDate, :gender, :description,
-        :email, :password, :status, :addressId, :contactId);
+        INSERT INTO $TABLE_NAME VALUES (:id, :name, :document, :photo, :birthdayDate, :gender,
+        :email, :password, :addressId, :contactId);
         SELECT * FROM $TABLE_NAME 
         LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
         LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
         WHERE idPaciente = :id;
     """
+
+    const val FIND_BY_ID = """
+        SELECT * FROM $TABLE_NAME 
+        LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
+        LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
+        WHERE idPaciente = :id;
+    """
+
+    const val UPDATE = """
+        UPDATE $TABLE_NAME SET
+        NomePaciente = :name,
+        Documento = :document,
+        Foto = :photo,
+        Nascimento = :birthdayDate,
+        Genero = :gender,
+        Email = :email,
+        Senha = :password
+        WHERE idPaciente = :id;
+        
+        SELECT * FROM $TABLE_NAME 
+        LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
+        LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
+        WHERE idPaciente = :id;
+    """
+
+    const val SEARCH = """
+        SELECT * FROM $TABLE_NAME p 
+        LEFT JOIN endereco e ON p.Endereco_idEndereco = e.idEndereco
+        LEFT JOIN contato c ON p.Contato_idContato = c.idContato
+        WHERE 
+    """
+
+    const val UPDATE_PHOTO_BY_ID = """
+        UPDATE $TABLE_NAME SET
+        Foto = :photo
+        WHERE idPaciente = :id
+    """
+
 }
