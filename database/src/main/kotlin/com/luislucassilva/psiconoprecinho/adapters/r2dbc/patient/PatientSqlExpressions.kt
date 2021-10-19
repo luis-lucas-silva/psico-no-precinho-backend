@@ -11,7 +11,7 @@ object PatientSqlExpressions {
         WHERE email = :username AND senha = :password
     """
     const val INSERT = """
-        INSERT INTO $TABLE_NAME VALUES (:id, :name, :document, :photo, :birthdayDate, :gender,
+        INSERT INTO $TABLE_NAME VALUES (:id, :name, :document, :photo, :gender, :birthdayDate,
         :email, :password, :addressId, :contactId);
         SELECT * FROM $TABLE_NAME 
         LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
@@ -31,8 +31,8 @@ object PatientSqlExpressions {
         NomePaciente = :name,
         Documento = :document,
         Foto = :photo,
-        Nascimento = :birthdayDate,
         Genero = :gender,
+        Nascimento = :birthdayDate,
         Email = :email,
         Senha = :password
         WHERE idPaciente = :id;
