@@ -1,7 +1,6 @@
 package com.luislucassilva.psiconoprecinho.adapters.router
 
-import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PhotoHandler
-import com.luislucassilva.psiconoprecinho.adapters.router.handlers.PsychologistHandler
+import com.luislucassilva.psiconoprecinho.adapters.router.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -44,6 +43,49 @@ class RouterConfiguration {
                         DELETE("/{id:$UUID_REGEX}", handler::deleteById)
                     }
                 }
+            }
+        }
+    }
+
+        @Bean
+    fun patientRouter(handler: PatientHandler) = coRouter {
+        accept(MediaType.APPLICATION_JSON).nest {
+            getContextPath().nest {
+                "/patient".nest {
+                    POST("/login", handler::findByUserNameAndPasswordRequest)
+                    POST("/search", handler::search)
+                    GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::updateById)
+                }
+                POST("/patient", handler::create)
+
+            }
+        }
+    }
+    @Bean
+    fun chatRouter(handler: ChatHandler) = coRouter {
+        accept(MediaType.APPLICATION_JSON).nest {
+            getContextPath().nest {
+                "/chat".nest {
+                    GET("/{id:$UUID_REGEX}", handler::findById)
+                    GET("/patient/{id:$UUID_REGEX}", handler::findByPatient)
+                    GET("/psychologist/{id:$UUID_REGEX}", handler::findByPsychologist)
+                    PUT("/{id:$UUID_REGEX}", handler::findMessages)
+                }
+                POST("/chat", handler::create)
+
+            }
+        }
+    }
+    @Bean
+    fun messageRouter(handler: MessageHandler) = coRouter {
+        accept(MediaType.APPLICATION_JSON).nest {
+            getContextPath().nest {
+                "/message".nest {
+                    GET("/chat/{id:$UUID_REGEX}", handler::findByChat)
+                }
+                POST("/message", handler::create)
+
             }
         }
     }
