@@ -16,6 +16,11 @@ class RouterConfiguration {
 
     private fun getContextPath() = "/api/"
 
+
+    @Bean
+    fun homeRouter(handler: HomeHandler) = coRouter {
+        GET("/", handler::getHome)
+    }
     @Bean
     fun psychologistRouter(handler: PsychologistHandler) = coRouter {
         accept(MediaType.APPLICATION_JSON).nest {
