@@ -12,11 +12,11 @@ object PatientSqlExpressions {
     """
     const val INSERT = """
         INSERT INTO $TABLE_NAME VALUES (:id, :name, :document, :photo, :gender, :birthdayDate,
-        :email, :password, :addressId, :contactId);
+        :email, :password, :addressId, :contactId)
         SELECT * FROM $TABLE_NAME 
         LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
         LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
-        WHERE idPaciente = :id;
+        WHERE idPaciente = :id
     """
 
     const val FIND_BY_ID = """

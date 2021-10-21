@@ -5,7 +5,7 @@ object MessageSqlExpressions {
     private const val TABLE_NAME = "mensagem"
 
     const val INSERT = """
-         INSERT INTO $TABLE_NAME VALUES (:id, :content, :date, :chat, :sender, :receiver);
+         INSERT INTO $TABLE_NAME VALUES (:id, :content, :date, :chat, :sender, :receiver)
          
          SELECT * FROM $TABLE_NAME
          WHERE idMensagem = :id

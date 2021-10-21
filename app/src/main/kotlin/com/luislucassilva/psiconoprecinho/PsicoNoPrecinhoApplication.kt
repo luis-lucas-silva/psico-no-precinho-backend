@@ -13,3 +13,5 @@ class PsicoNoPrecinhoApplication {}
 fun main(args: Array<String>) {
     runApplication<PsicoNoPrecinhoApplication>(*args)
 }
+
+

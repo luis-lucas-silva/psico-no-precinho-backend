@@ -61,7 +61,8 @@ class PsychologistHandler(
     }
 
     suspend fun updateById(serverRequest: ServerRequest): ServerResponse {
-        val psychologist = serverRequest.bodyToMono(Psychologist::class.java).awaitFirst()
+        val id = UUID.fromString(serverRequest.pathVariable("id"))
+        val psychologist = serverRequest.bodyToMono(Psychologist::class.java).awaitFirst().copy(id = id)
 
         val psychologistUpdated = psychologistService.update(psychologist)
 

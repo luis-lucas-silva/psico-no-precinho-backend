@@ -6,6 +6,7 @@ object ThemeSqlExpressions {
     const val INSERT = """
         INSERT INTO $TABLE_NAME
         VALUES (:idPsicologo, :idTema)
+        RETURNING *
     """
 
     const val DELETE = """
@@ -13,6 +14,6 @@ object ThemeSqlExpressions {
     """
 
     const val FIND_BY_PSYCHOLOGIST_ID = """
-        SELECT * FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :idPsicologo;
+        SELECT * FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :idPsicologo
     """
 }

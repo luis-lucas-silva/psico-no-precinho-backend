@@ -90,4 +90,17 @@ class RouterConfiguration {
         }
     }
 
+    @Bean
+    fun administratorRouter(handler: AdministratorHandler) = coRouter {
+        accept(MediaType.APPLICATION_JSON).nest {
+            getContextPath().nest {
+                "/administrator".nest {
+                    POST("/login", handler::findByUserNameAndPasswordRequest)
+                    GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::updateById)
+                }
+                POST("/administrator", handler::create)
+            }
+        }
+    }
 }

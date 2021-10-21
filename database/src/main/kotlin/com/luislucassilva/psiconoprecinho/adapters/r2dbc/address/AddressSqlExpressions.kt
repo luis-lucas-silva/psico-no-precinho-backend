@@ -5,11 +5,9 @@ object AddressSqlExpressions {
      private const val TABLE_NAME = "endereco"
 
     const val INSERT = """
-        INSERT INTO $TABLE_NAME VALUES (:id, :logradouro, :numero, :complemento, :cep, :bairro, 
-        :cidade, :estado);
-        SELECT * FROM $TABLE_NAME WHERE idEndereco = :id;
+        INSERT INTO $TABLE_NAME VALUES (:id, :logradouro, :numero, :complemento, :cep, :bairro, :cidade, :estado)
+        RETURNING *
     """
-
     const val UPDATE = """
         UPDATE $TABLE_NAME SET
         Logradouro = :logradouro,
@@ -19,8 +17,8 @@ object AddressSqlExpressions {
         Bairro = :bairro,
         Cidade = :cidade,
         Estado = :estado
-        WHERE idEndereco = :id;
-        
-        SELECT * FROM $TABLE_NAME WHERE idEndereco = :id;
+        WHERE idEndereco = :id
+        RETURNING *
     """
+
 }
