@@ -1,10 +1,10 @@
 spring:
   r2dbc:
     name: psico-no-precinho-backend
-    url: ${R2DBC_DATABASE_URL}
+    url: ${R2DBC_DATABASE_URL:r2dbc:pool:postgresql://localhost:5432/psiconoprecinho}
     schema: public
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    username: ${DATABASE_USERNAME:application}
+    password: ${DATABASE_PASSWORD:application}
     properties:
       sslMode: REQUIRE
     pool:
