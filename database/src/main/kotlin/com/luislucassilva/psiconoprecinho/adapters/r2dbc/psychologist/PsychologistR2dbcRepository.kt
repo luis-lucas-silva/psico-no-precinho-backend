@@ -19,11 +19,9 @@ import com.luislucassilva.psiconoprecinho.utils.bindIfNotNull
 import com.luislucassilva.psiconoprecinho.utils.bindOrNull
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
-import org.springframework.r2dbc.core.DatabaseClient
-import org.springframework.r2dbc.core.await
-import org.springframework.r2dbc.core.awaitOneOrNull
-import org.springframework.r2dbc.core.flow
+import org.springframework.r2dbc.core.*
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -54,14 +52,14 @@ open class PsychologistR2dbcRepository(
             val address = addressRepository.create(address)
             val contact = contactRepository.create(contact)
 
-            val psychologistInserted = databaseClient.sql(INSERT)
+            databaseClient.sql(INSERT)
                 .bindIfNotNull("id", id.toString())
                 .bind("name", name)
                 .bind("document", document)
                 .bind("documentType", documentType)
                 .bindOrNull("photo", photo)
                 .bind("crp", crp)
-                .bind("birthdayDate", birthdayDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .bind("birthdayDate", birthdayDate)
                 .bind("gender", gender)
                 .bind("minValue", minValue)
                 .bind("maxValue", maxValue)
@@ -71,11 +69,9 @@ open class PsychologistR2dbcRepository(
                 .bind("status", status)
                 .bind("addressId", address!!.id.toString())
                 .bind("contactId", contact!!.id.toString())
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
 
-            psychologistInserted?.address = address
-            psychologistInserted?.contact = contact
+            val psychologistInserted = findById(id!!)
 
             formacao?.map { formacao ->
                 formacaoRepository.create(formacao, id!!)
@@ -110,14 +106,14 @@ open class PsychologistR2dbcRepository(
     override suspend fun update(psychologist: Psychologist): Psychologist? {
 
         with(psychologist) {
-            val psychologistUpdated = databaseClient.sql(UPDATE)
+            databaseClient.sql(UPDATE)
                 .bindIfNotNull("id", id.toString())
                 .bind("name", name)
                 .bind("document", document)
                 .bind("documentType", documentType)
                 .bindOrNull("photo", photo)
                 .bind("crp", crp)
-                .bind("birthdayDate", birthdayDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .bind("birthdayDate", birthdayDate)
                 .bind("gender", gender)
                 .bind("minValue", minValue)
                 .bind("maxValue", maxValue)
@@ -125,8 +121,9 @@ open class PsychologistR2dbcRepository(
                 .bind("email", email)
                 .bind("password", password)
                 .bind("status", status)
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
+
+            val psychologistUpdated = findById(id!!)
 
             psychologistUpdated?.address = addressRepository.update(address)!!
             psychologistUpdated?.contact = contactRepository.update(contact)!!
@@ -189,8 +186,8 @@ open class PsychologistR2dbcRepository(
             crp = row.get("CRP") as String,
             birthdayDate = row.get("Nascimento") as LocalDate,
             gender = row.get("Genero") as String,
-            minValue = row.get("ValorMin") as Double,
-            maxValue = row.get("ValorMax") as Double,
+            minValue = row.get("ValorMin") as BigDecimal,
+            maxValue = row.get("ValorMax") as BigDecimal,
             description = row.get("Descricao") as String,
             email = row.get("Email") as String,
             password = row.get("Senha") as String,
@@ -211,7 +208,7 @@ open class PsychologistR2dbcRepository(
     }
     private fun rowMapperAddress(row: Row): Address {
         return Address(
-            id = UUID.fromString(row.get("idEndereco") as String),
+            id = UUID.fromString(row.get("endereco_idendereco") as String),
             logradouro = row.get("Logradouro") as String,
             numero = row.get("Numero") as? Int,
             complemento = row.get("Complemento") as? String,
@@ -224,7 +221,7 @@ open class PsychologistR2dbcRepository(
 
     private fun rowMapperContact(row: Row): Contact {
         return Contact(
-            id = UUID.fromString(row.get("idContato") as String),
+            id = UUID.fromString(row.get("contato_idcontato") as String),
             type = row.get("Tipo") as String,
             number = row.get("Telefone") as String
         )

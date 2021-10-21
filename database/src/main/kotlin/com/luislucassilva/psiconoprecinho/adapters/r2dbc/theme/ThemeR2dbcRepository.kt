@@ -20,7 +20,7 @@ open class ThemeR2dbcRepository(
     override suspend fun addThemeToPsychologist(themeId: Int, psychologistId: UUID) {
         databaseClient.sql(INSERT)
             .bind("idPsicologo", psychologistId.toString())
-            .bind("idTema", themeId.toString())
+            .bind("idTema", themeId)
             .await()
     }
 

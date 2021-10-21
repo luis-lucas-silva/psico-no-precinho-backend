@@ -6,15 +6,15 @@ object FormacaoSqlExpressions {
 
     const val INSERT = """
         INSERT INTO $TABLE_NAME
-        VALUES (:id, :name, :psychologistId);
-        SELECT * FROM $TABLE_NAME WHERE idFormacao = :id;
+        VALUES (:id, :name, :psychologistId)
+        RETURNING *
     """
 
     const val DELETE = """
-        DELETE FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :psychologistId;
+        DELETE FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :psychologistId
     """
 
     const val FIND_BY_PSYCHOLOGIST_ID = """
-        SELECT * FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :psychologistId;
+        SELECT * FROM $TABLE_NAME WHERE Psicologo_idPsicologo = :psychologistId
     """
 }

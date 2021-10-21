@@ -2,6 +2,7 @@ package com.luislucassilva.psiconoprecinho.domain.psychologist
 
 import com.luislucassilva.psiconoprecinho.domain.address.Address
 import com.luislucassilva.psiconoprecinho.domain.contact.Contact
+import java.math.BigDecimal
 import java.sql.Blob
 import java.time.LocalDate
 import java.util.*
@@ -16,8 +17,8 @@ data class Psychologist(
     val crp: String,
     val birthdayDate: LocalDate,
     val gender: String,
-    val minValue: Double,
-    val maxValue: Double,
+    val minValue: BigDecimal,
+    val maxValue: BigDecimal,
     val description: String,
     val email: String,
     val password: String,

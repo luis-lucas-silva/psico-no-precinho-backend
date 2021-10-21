@@ -74,9 +74,9 @@
         </dependency>
 
         <dependency>
-            <groupId>dev.miku</groupId>
-            <artifactId>r2dbc-mysql</artifactId>
-            <version>0.8.2.RELEASE</version>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+            <version>0.8.10.RELEASE</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.projectreactor.netty</groupId>

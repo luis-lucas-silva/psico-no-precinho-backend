@@ -14,12 +14,8 @@ object PsychologistSqlExpressions {
     const val INSERT = """
         INSERT INTO $TABLE_NAME VALUES (:id, :name, :documentType, :document, :photo, :crp, :birthdayDate, 
         :gender, :minValue, :maxValue, :description,
-        :email, :password, :status, :addressId, :contactId);
-        
-        SELECT * FROM $TABLE_NAME 
-        LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
-        LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
-        WHERE idPsicologo = :id;
+        :email, :password, :status, :addressId, :contactId)
+        RETURNING *
     """
 
     const val FIND_BY_ID = """
@@ -44,12 +40,8 @@ object PsychologistSqlExpressions {
         Email = :email,
         Senha = :password,
         StatusCadastro = :status
-        WHERE idPsicologo = :id;
-        
-        SELECT * FROM $TABLE_NAME 
-        LEFT JOIN endereco ON $TABLE_NAME.Endereco_idEndereco = endereco.idEndereco
-        LEFT JOIN contato ON $TABLE_NAME.Contato_idContato = contato.idContato
-        WHERE idPsicologo = :id;
+        WHERE idPsicologo = :id
+        RETURNING *
     """
 
     const val SEARCH = """
@@ -64,6 +56,4 @@ object PsychologistSqlExpressions {
         Foto = :photo
         WHERE idPsicologo = :id
     """
-
-
 }
