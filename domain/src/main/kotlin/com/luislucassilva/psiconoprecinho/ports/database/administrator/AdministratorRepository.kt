@@ -5,7 +5,7 @@ import java.util.*
 
 interface AdministratorRepository {
 
-    suspend fun findByUserNameAndPassword(administrator: Administrator): Administrator?
+    suspend fun findByUserNameAndPassword(userName: String, password: String): Administrator?
     suspend fun create(administrator: Administrator): Administrator?
     suspend fun update(administrator: Administrator): Administrator?
     suspend fun findById(id: UUID): Administrator?

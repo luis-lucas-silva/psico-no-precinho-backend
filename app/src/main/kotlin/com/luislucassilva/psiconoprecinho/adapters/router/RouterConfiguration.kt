@@ -47,6 +47,11 @@ class RouterConfiguration {
 //                        GET("/{id:$UUID_REGEX}", handler::findById)
                         DELETE("/{id:$UUID_REGEX}", handler::deleteById)
                     }
+                    "/patient".nest {
+                        POST("/{id:$UUID_REGEX}", handler::createOrUpdate)
+//                        GET("/{id:$UUID_REGEX}", handler::findById)
+                        DELETE("/{id:$UUID_REGEX}", handler::deleteById)
+                    }
                 }
             }
         }
@@ -78,7 +83,6 @@ class RouterConfiguration {
                     PUT("/{id:$UUID_REGEX}", handler::findMessages)
                 }
                 POST("/chat", handler::create)
-
             }
         }
     }

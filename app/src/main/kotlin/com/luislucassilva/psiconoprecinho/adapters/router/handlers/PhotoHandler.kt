@@ -3,6 +3,7 @@ package com.luislucassilva.psiconoprecinho.adapters.router.handlers
 import com.luislucassilva.psiconoprecinho.domain.photo.PhotoRequest
 import com.luislucassilva.psiconoprecinho.domain.photo.PhotoRequestUserType
 import com.luislucassilva.psiconoprecinho.domain.photo.PhotoRequestUserType.PSYCHOLOGIST
+import com.luislucassilva.psiconoprecinho.services.PatientService
 import com.luislucassilva.psiconoprecinho.services.PsychologistService
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DataBufferUtils
@@ -16,7 +17,8 @@ import java.util.*
 
 @Component
 class PhotoHandler(
-    private val psychologistService: PsychologistService
+    private val psychologistService: PsychologistService,
+    private val patientService: PatientService
 ) {
 
     suspend fun createOrUpdate(serverRequest: ServerRequest): ServerResponse {
@@ -33,6 +35,9 @@ class PhotoHandler(
 
             if (photoRequest.userType == PSYCHOLOGIST) {
                 psychologistService.createPhoto(photoRequest)
+            }
+            else {
+                patientService.createPhoto(photoRequest)
             }
 
             ServerResponse.ok().bodyValueAndAwait(photoRequest)
@@ -79,6 +84,8 @@ class PhotoHandler(
                 ServerResponse.ok().buildAndAwait()
 
             } else {
+                val photo = patientService.deletePhotoById(userId)
+
                 ServerResponse.ok().buildAndAwait()
             }
 
