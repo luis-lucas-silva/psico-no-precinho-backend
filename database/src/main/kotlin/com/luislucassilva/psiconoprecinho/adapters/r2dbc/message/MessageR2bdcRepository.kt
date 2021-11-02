@@ -1,6 +1,7 @@
 package com.luislucassilva.psiconoprecinho.adapters.r2dbc.message
 
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.FIND_BY_CHAT
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.FIND_BY_ID
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.INSERT
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions
 import com.luislucassilva.psiconoprecinho.domain.chat.Chat
@@ -12,6 +13,7 @@ import com.luislucassilva.psiconoprecinho.utils.get
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.await
 import org.springframework.r2dbc.core.awaitOneOrNull
 import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
@@ -25,16 +27,16 @@ open class MessageR2bdcRepository (
 ) : MessageRepository {
     override suspend fun create(message: Message): Message? {
         with(message) {
-            val messageInserted = databaseClient.sql(INSERT)
+            databaseClient.sql(INSERT)
                 .bindIfNotNull("id", id.toString())
                 .bind("content", content)
                 .bind("date", date)
                 .bind("chat", chat.toString())
                 .bind("sender", sender.toString())
                 .bind("receiver", receiver.toString())
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
 
+            val messageInserted = findById(id!!)
 
             return messageInserted
         }
@@ -47,6 +49,13 @@ open class MessageR2bdcRepository (
             .map(::rowMapper)
             .flow()
             .toList()
+    }
+
+    override suspend fun findById(id: UUID): Message? {
+        return databaseClient.sql(FIND_BY_ID)
+            .bind("id", id.toString())
+            .map(::rowMapper)
+            .awaitOneOrNull()
     }
 
 

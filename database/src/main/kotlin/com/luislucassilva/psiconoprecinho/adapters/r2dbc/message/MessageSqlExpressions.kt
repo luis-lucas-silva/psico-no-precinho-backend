@@ -7,12 +7,16 @@ object MessageSqlExpressions {
     const val INSERT = """
          INSERT INTO $TABLE_NAME VALUES (:id, :content, :date, :chat, :sender, :receiver)
          
-         SELECT * FROM $TABLE_NAME
-         WHERE idMensagem = :id
+         RETURNING *
     """
 
     const val FIND_BY_CHAT = """
         SELECT * FROM $TABLE_NAME
         WHERE Conversa_idConversa = :id
+    """
+
+    const val FIND_BY_ID = """
+        SELECT * FROM $TABLE_NAME
+        WHERE idMensagem = :id
     """
 }

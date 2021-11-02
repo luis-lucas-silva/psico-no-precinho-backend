@@ -18,9 +18,7 @@ import com.luislucassilva.psiconoprecinho.utils.bindOrNull
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
-import org.springframework.r2dbc.core.await
-import org.springframework.r2dbc.core.awaitOneOrNull
-import org.springframework.r2dbc.core.flow
+import org.springframework.r2dbc.core.*
 import org.springframework.stereotype.Repository
 import java.sql.Blob
 import java.time.LocalDate
@@ -50,7 +48,7 @@ open class PatientR2bdcRepository(
             val address = addressRepository.create(address)
             val contact = contactRepository.create(contact)
 
-            val patientInserted =  databaseClient.sql(INSERT)
+            databaseClient.sql(INSERT)
                 .bindIfNotNull("id", id.toString())
                 .bind("name", name)
                 .bind("document", document)
@@ -61,11 +59,9 @@ open class PatientR2bdcRepository(
                 .bind("password", password)
                 .bind("addressId", address!!.id.toString())
                 .bind("contactId", contact!!.id.toString())
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
 
-            patientInserted?.address = address
-            patientInserted?.contact = contact
+            val patientInserted = findById(id!!)
 
             return patientInserted
         }
@@ -85,7 +81,7 @@ open class PatientR2bdcRepository(
 
 
         with(patient) {
-            val patientUpdated = databaseClient.sql(UPDATE)
+            databaseClient.sql(UPDATE)
                 .bindIfNotNull("id", id.toString())
                 .bind("name", name)
                 .bind("document", document)
@@ -94,9 +90,9 @@ open class PatientR2bdcRepository(
                 .bind("gender", gender)
                 .bind("email", email)
                 .bind("password", password)
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
 
+            val patientUpdated = findById(id!!)
             patientUpdated?.address = addressRepository.update(address)!!
             patientUpdated?.contact = contactRepository.update(contact)!!
 

@@ -18,4 +18,8 @@ class MessageService(
     suspend fun findByChat(chat: Chat): List<Message> {
         return messageRepository.findByChat(chat)
     }
+
+    suspend fun findById(id: UUID): Message? {
+        return messageRepository.findById(id)
+    }
 }

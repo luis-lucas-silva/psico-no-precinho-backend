@@ -13,6 +13,7 @@ import com.luislucassilva.psiconoprecinho.utils.bindIfNotNull
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
 import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.await
 import org.springframework.r2dbc.core.awaitOneOrNull
 import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
@@ -39,12 +40,13 @@ open class ChatR2bdcRepository (
     override suspend fun create(chat: Chat): Chat? {
 
         with(chat) {
-            val chatInserted = databaseClient.sql(INSERT)
+            databaseClient.sql(INSERT)
                 .bindIfNotNull("id", id.toString())
                 .bind("patient", patient.toString())
                 .bind("psychologist", psychologist.toString())
-                .map(::rowMapper)
-                .awaitOneOrNull()
+                .await()
+
+            val chatInserted = findById(id!!)
 
             return chatInserted
         }

@@ -32,4 +32,16 @@ class MessageHandler(
 
         return ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(messages)
     }
+
+    suspend fun findById(serverRequest: ServerRequest): ServerResponse {
+        val id = UUID.fromString(serverRequest.pathVariable("id"))
+
+        val message = messageService.findById(id)
+
+        return if (message != null) {
+            ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(message)
+        } else {
+            ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
+        }
+    }
 }

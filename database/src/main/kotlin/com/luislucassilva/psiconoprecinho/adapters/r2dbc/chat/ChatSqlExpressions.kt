@@ -16,7 +16,7 @@ object ChatSqlExpressions {
     const val INSERT = """
         INSERT INTO $TABLE_NAME VALUES(:id, :patient, :psychologist)
         
-        SELECT * FROM $TABLE_NAME WHERE idConversa = :id
+        RETURNING *
     """
 
     const val FIND_BY_ID = """
