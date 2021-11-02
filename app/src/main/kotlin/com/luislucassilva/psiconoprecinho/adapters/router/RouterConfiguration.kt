@@ -93,7 +93,7 @@ class RouterConfiguration {
             getContextPath().nest {
                 "/message".nest {
                     GET("/chat/{id:$UUID_REGEX}", handler::findByChat)
-                    GET("/{id.$UUID_REGEX}", handler::findById)
+                    GET("/{id:$UUID_REGEX}", handler::findById)
                 }
                 POST("/message", handler::create)
 
