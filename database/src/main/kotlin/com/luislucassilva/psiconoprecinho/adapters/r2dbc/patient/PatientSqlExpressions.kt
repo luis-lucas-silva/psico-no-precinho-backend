@@ -20,7 +20,7 @@ object PatientSqlExpressions {
         SELECT * FROM $TABLE_NAME 
         LEFT JOIN endereco ON ${TABLE_NAME}.Endereco_idEndereco = endereco.idEndereco
         LEFT JOIN contato ON ${TABLE_NAME}.Contato_idContato = contato.idContato
-        WHERE idPaciente = :id;
+        WHERE idPaciente = :id
     """
 
     const val UPDATE = """

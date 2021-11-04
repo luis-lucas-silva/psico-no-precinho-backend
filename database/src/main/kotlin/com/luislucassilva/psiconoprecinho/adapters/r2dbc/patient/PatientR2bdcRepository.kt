@@ -53,7 +53,7 @@ open class PatientR2bdcRepository(
                 .bind("name", name)
                 .bind("document", document)
                 .bindOrNull("photo", photo)
-                .bind("birthdayDate", birthdayDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .bind("birthdayDate", birthdayDate)
                 .bind("gender", gender)
                 .bind("email", email)
                 .bind("password", password)
