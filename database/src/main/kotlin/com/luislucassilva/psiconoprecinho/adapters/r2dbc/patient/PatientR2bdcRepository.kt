@@ -132,7 +132,7 @@ open class PatientR2bdcRepository(
             id = UUID.fromString(row.get("idPaciente") as String),
             name = row.get("NomePaciente") as String,
             document = row.get("Documento") as String,
-            photo = row.get("Foto") as? ByteArray,
+            photo =  getPhoto(row),
             birthdayDate = row.get("Nascimento") as LocalDate,
             gender = row.get("Genero") as String,
             email = row.get("Email") as String,
@@ -140,6 +140,16 @@ open class PatientR2bdcRepository(
             address = rowMapperAddress(row),
             contact = rowMapperContact(row)
         )
+    }
+
+    private fun getPhoto(row: Row): ByteArray? {
+        val rowValue = row.get("Foto")
+        return if (rowValue != null) {
+            row.get("Foto", ByteArray::class.java)
+        } else {
+            null
+        }
+
     }
 
     private fun rowMapperAddress(row: Row): Address {
