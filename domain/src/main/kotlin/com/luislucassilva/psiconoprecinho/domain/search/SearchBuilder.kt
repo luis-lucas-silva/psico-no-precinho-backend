@@ -18,19 +18,19 @@ class SearchBuilder {
 
     private fun addFilter(filter: String, value: Any, currentPostion: Int) {
         if (filter == "CIDADE") {
-            search = search.plus("e.Cidade = \"$value\" ")
+            search = search.plus("e.Cidade = \'$value\' ")
 
             if (currentPostion != indexControl) {
                 search = search.plus("and ")
             }
         } else if (filter == "ESTADO") {
-            search = search.plus("e.Estado = \"$value\" ")
+            search = search.plus("e.Estado = \'$value\' ")
 
             if (currentPostion != indexControl) {
                 search = search.plus("and ")
             }
         } else if (filter == "GENERO") {
-            search = search.plus("p.Genero = \"$value\" ")
+            search = search.plus("p.Genero = \'$value\' ")
 
             if (currentPostion != indexControl) {
                 search = search.plus("and ")

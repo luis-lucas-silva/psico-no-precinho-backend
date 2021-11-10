@@ -13,4 +13,6 @@ interface PsychologistRepository {
 
     suspend fun createPhoto(photoRequest: PhotoRequest)
     suspend fun deletePhotoById(id: UUID)
+
+    suspend fun findByPendingStatus(): List<Psychologist>
 }

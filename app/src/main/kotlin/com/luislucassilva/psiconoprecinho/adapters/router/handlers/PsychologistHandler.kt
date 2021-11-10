@@ -5,11 +5,11 @@ import com.luislucassilva.psiconoprecinho.domain.psychologist.Psychologist
 import com.luislucassilva.psiconoprecinho.domain.search.SearchRequest
 import com.luislucassilva.psiconoprecinho.services.PsychologistService
 import kotlinx.coroutines.reactive.awaitFirst
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import java.util.*
-import java.util.regex.Pattern
 
 @Component
 class PsychologistHandler(
@@ -38,11 +38,16 @@ class PsychologistHandler(
     suspend fun create(serverRequest: ServerRequest): ServerResponse {
         val psychologist = serverRequest.bodyToMono(Psychologist::class.java).awaitFirst()
 
-        val psychologistInserted = psychologistService.create(psychologist)
-        return if (psychologistInserted != null) {
-            ServerResponse.status(HttpStatus.CREATED).bodyValueAndAwait(psychologistInserted)
-        } else {
-            ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).buildAndAwait()
+        return try {
+            val psychologistInserted = psychologistService.create(psychologist)
+
+            if (psychologistInserted != null) {
+                ServerResponse.status(HttpStatus.CREATED).bodyValueAndAwait(psychologistInserted)
+            } else {
+                ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).buildAndAwait()
+            }
+        } catch (exception: DataIntegrityViolationException) {
+            ServerResponse.status(HttpStatus.CONFLICT).buildAndAwait()
         }
 
     }
@@ -54,8 +59,7 @@ class PsychologistHandler(
 
         return if (psychologist != null) {
             ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologist)
-        }
-        else {
+        } else {
             ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
         }
     }
@@ -68,10 +72,15 @@ class PsychologistHandler(
 
         return if (psychologistUpdated != null) {
             ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologistUpdated)
-        }
-        else {
+        } else {
             ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
         }
+    }
+
+    suspend fun findByPendingStatus(serverRequest: ServerRequest): ServerResponse {
+        val psychologists = psychologistService.findByPendingStatus()
+
+        return ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(psychologists)
     }
 
     suspend fun search(serverRequest: ServerRequest): ServerResponse {

@@ -43,6 +43,10 @@ class PsychologistService(
     suspend fun deletePhotoById(userId: UUID) {
         psychologistRepository.deletePhotoById(userId)
     }
+
+    suspend fun findByPendingStatus(): List<Psychologist> {
+        return psychologistRepository.findByPendingStatus()
+    }
 }
 
 

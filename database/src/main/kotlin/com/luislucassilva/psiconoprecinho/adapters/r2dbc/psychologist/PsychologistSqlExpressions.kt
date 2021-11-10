@@ -56,4 +56,11 @@ object PsychologistSqlExpressions {
         Foto = :photo
         WHERE idPsicologo = :id
     """
+
+    const val FIND_BY_PENDING_STATUS = """
+        SELECT * FROM $TABLE_NAME p 
+        LEFT JOIN endereco e ON p.Endereco_idEndereco = e.idEndereco
+        LEFT JOIN contato c ON p.Contato_idContato = c.idContato
+        WHERE StatusCadastro = 'PENDENTE'
+    """
 }

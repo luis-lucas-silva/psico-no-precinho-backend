@@ -31,6 +31,7 @@ class RouterConfiguration {
                     POST("/search", handler::search)
                     GET("/{id:$UUID_REGEX}", handler::findById)
                     PUT("/{id:$UUID_REGEX}", handler::updateById)
+                    GET("/pending", handler::findByPendingStatus)
                 }
                 POST("/psychologist", handler::create)
 

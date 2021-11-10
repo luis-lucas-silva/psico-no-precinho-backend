@@ -1,6 +1,7 @@
 package com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist
 
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.FIND_BY_ID
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.FIND_BY_PENDING_STATUS
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.FIND_BY_USERNAME_AND_PASSWORD
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.INSERT
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions.SEARCH
@@ -19,11 +20,13 @@ import com.luislucassilva.psiconoprecinho.utils.bindIfNotNull
 import com.luislucassilva.psiconoprecinho.utils.bindOrNull
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.flow.toList
-import org.springframework.r2dbc.core.*
+import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.await
+import org.springframework.r2dbc.core.awaitOneOrNull
+import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -176,6 +179,14 @@ open class PsychologistR2dbcRepository(
             .await()
     }
 
+    override suspend fun findByPendingStatus(): List<Psychologist> {
+        return databaseClient.sql(FIND_BY_PENDING_STATUS)
+            .map(::rowMapper)
+            .flow()
+            .toList()
+
+    }
+
     private fun rowMapper(row: Row): Psychologist {
         return Psychologist(
             id = UUID.fromString(row.get("idPsicologo") as String),
@@ -206,6 +217,7 @@ open class PsychologistR2dbcRepository(
         }
 
     }
+
     private fun rowMapperAddress(row: Row): Address {
         return Address(
             id = UUID.fromString(row.get("endereco_idendereco") as String),
