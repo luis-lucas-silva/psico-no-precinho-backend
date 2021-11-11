@@ -22,4 +22,8 @@ class MessageService(
     suspend fun findById(id: UUID): Message? {
         return messageRepository.findById(id)
     }
+
+    suspend fun read(id: UUID): Message? {
+        return messageRepository.read(id)
+    }
 }

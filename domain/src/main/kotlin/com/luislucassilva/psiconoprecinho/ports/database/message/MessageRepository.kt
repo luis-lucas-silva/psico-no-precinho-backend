@@ -8,4 +8,5 @@ interface MessageRepository {
     suspend fun create(message: Message): Message?
     suspend fun findByChat(chat: Chat): List<Message>
     suspend fun findById(id: UUID): Message?
+    suspend fun read(id: UUID): Message?
 }

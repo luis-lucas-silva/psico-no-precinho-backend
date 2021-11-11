@@ -5,7 +5,7 @@ object MessageSqlExpressions {
     private const val TABLE_NAME = "mensagem"
 
     const val INSERT = """
-         INSERT INTO $TABLE_NAME VALUES (:id, :content, :date, :chat, :sender, :receiver)
+         INSERT INTO $TABLE_NAME VALUES (:id, :content, :date, :chat, :sender, :receiver, :read)
          
          RETURNING *
     """
@@ -18,5 +18,12 @@ object MessageSqlExpressions {
     const val FIND_BY_ID = """
         SELECT * FROM $TABLE_NAME
         WHERE idMensagem = :id
+    """
+
+    const val READ = """
+        UPDATE $TABLE_NAME SET
+        Lido = true
+        WHERE idMensagem = :id
+        RETURNING *
     """
 }
