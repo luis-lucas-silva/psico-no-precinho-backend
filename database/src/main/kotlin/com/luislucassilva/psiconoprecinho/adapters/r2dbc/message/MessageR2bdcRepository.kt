@@ -45,9 +45,9 @@ open class MessageR2bdcRepository (
 
     }
 
-    override suspend fun findByChat(chat: Chat): List<Message> {
+    override suspend fun findByChat(id: UUID): List<Message> {
         return databaseClient.sql(FIND_BY_CHAT)
-            .bind("id", chat.id.toString())
+            .bind("id", id.toString())
             .map(::rowMapper)
             .flow()
             .toList()
@@ -65,7 +65,7 @@ open class MessageR2bdcRepository (
             .bind("id", id.toString())
             .await()
 
-        return findById(id!!)
+        return findById(id)
 
     }
 

@@ -26,7 +26,7 @@ class MessageHandler(
     }
 
     suspend fun findByChat(serverRequest: ServerRequest): ServerResponse {
-        val chat = serverRequest.bodyToMono(Chat::class.java).awaitFirst()
+        val chat = UUID.fromString(serverRequest.pathVariable("id"))
 
         val messages = messageService.findByChat(chat)
 
