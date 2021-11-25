@@ -17,8 +17,7 @@ class WebConfig: WebFluxConfigurer
             .allowedHeaders("*") // put the http headers you want allow
     }
     
-    @Override
-    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
-        configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024);
+    override fun configureHttpMessageCodecs(configurer: ServerCodecConfigurer) {
+        configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
     }
 }
