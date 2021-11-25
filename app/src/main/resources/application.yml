@@ -13,3 +13,5 @@ spring:
       max-idle-time: 2m
       max-life-time: 30m
       validation-query: SELECT 1
+  codec:
+     max-in-memory-size: 30MB
