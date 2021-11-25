@@ -16,4 +16,9 @@ class WebConfig: WebFluxConfigurer
             .allowedMethods("GET", "POST", "PUT", "FETCH", "DELETE") // put the http verbs you want allow
             .allowedHeaders("*") // put the http headers you want allow
     }
+    
+    @Override
+    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+        configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024);
+    }
 }
