@@ -15,11 +15,15 @@ class MessageService(
         return messageRepository.create(message.copy(id= UUID.randomUUID()))
     }
 
-    suspend fun findByChat(chat: Chat): List<Message> {
-        return messageRepository.findByChat(chat)
+    suspend fun findByChat(id: UUID): List<Message> {
+        return messageRepository.findByChat(id)
     }
 
     suspend fun findById(id: UUID): Message? {
         return messageRepository.findById(id)
+    }
+
+    suspend fun read(id: UUID): Message? {
+        return messageRepository.read(id)
     }
 }

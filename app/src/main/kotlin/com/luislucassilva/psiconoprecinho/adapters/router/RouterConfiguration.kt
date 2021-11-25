@@ -95,6 +95,7 @@ class RouterConfiguration {
                 "/message".nest {
                     GET("/chat/{id:$UUID_REGEX}", handler::findByChat)
                     GET("/{id:$UUID_REGEX}", handler::findById)
+                    PUT("/{id:$UUID_REGEX}", handler::read)
                 }
                 POST("/message", handler::create)
 

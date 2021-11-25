@@ -12,5 +12,6 @@ data class Message(
     val date: LocalDateTime,
     val chat: UUID? = null,
     val sender: UUID? = null,
-    val receiver: UUID? = null
+    val receiver: UUID? = null,
+    val read: Boolean = false
 )

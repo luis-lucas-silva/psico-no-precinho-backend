@@ -3,6 +3,7 @@ package com.luislucassilva.psiconoprecinho.adapters.r2dbc.message
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.FIND_BY_CHAT
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.FIND_BY_ID
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.INSERT
+import com.luislucassilva.psiconoprecinho.adapters.r2dbc.message.MessageSqlExpressions.READ
 import com.luislucassilva.psiconoprecinho.adapters.r2dbc.psychologist.PsychologistSqlExpressions
 import com.luislucassilva.psiconoprecinho.domain.chat.Chat
 import com.luislucassilva.psiconoprecinho.domain.chat.Message
@@ -34,6 +35,7 @@ open class MessageR2bdcRepository (
                 .bind("chat", chat.toString())
                 .bind("sender", sender.toString())
                 .bind("receiver", receiver.toString())
+                .bind("read", read)
                 .await()
 
             val messageInserted = findById(id!!)
@@ -43,9 +45,9 @@ open class MessageR2bdcRepository (
 
     }
 
-    override suspend fun findByChat(chat: Chat): List<Message> {
+    override suspend fun findByChat(id: UUID): List<Message> {
         return databaseClient.sql(FIND_BY_CHAT)
-            .bind("id", chat.id.toString())
+            .bind("id", id.toString())
             .map(::rowMapper)
             .flow()
             .toList()
@@ -58,6 +60,15 @@ open class MessageR2bdcRepository (
             .awaitOneOrNull()
     }
 
+    override suspend fun read(id: UUID): Message? {
+        databaseClient.sql(READ)
+            .bind("id", id.toString())
+            .await()
+
+        return findById(id)
+
+    }
+
 
     private fun rowMapper(row: Row): Message {
         return Message(
@@ -66,7 +77,8 @@ open class MessageR2bdcRepository (
             date = row.get("Data") as LocalDateTime,
             chat = UUID.fromString(row.get("Conversa_idConversa") as String),
             sender = UUID.fromString(row.get("Remetente") as String),
-            receiver = UUID.fromString(row.get("Destinatario") as String)
+            receiver = UUID.fromString(row.get("Destinatario") as String),
+            read = row.get("Lido") as Boolean
 
         )
     }

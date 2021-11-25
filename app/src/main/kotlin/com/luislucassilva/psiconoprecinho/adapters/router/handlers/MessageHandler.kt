@@ -26,7 +26,7 @@ class MessageHandler(
     }
 
     suspend fun findByChat(serverRequest: ServerRequest): ServerResponse {
-        val chat = serverRequest.bodyToMono(Chat::class.java).awaitFirst()
+        val chat = UUID.fromString(serverRequest.pathVariable("id"))
 
         val messages = messageService.findByChat(chat)
 
@@ -37,6 +37,18 @@ class MessageHandler(
         val id = UUID.fromString(serverRequest.pathVariable("id"))
 
         val message = messageService.findById(id)
+
+        return if (message != null) {
+            ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(message)
+        } else {
+            ServerResponse.status(HttpStatus.NOT_FOUND).buildAndAwait()
+        }
+    }
+
+    suspend fun read(serverRequest: ServerRequest): ServerResponse {
+        val id = UUID.fromString(serverRequest.pathVariable("id"))
+
+        val message = messageService.read(id)
 
         return if (message != null) {
             ServerResponse.status(HttpStatus.OK).bodyValueAndAwait(message)
